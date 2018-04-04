@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: certbotdns
+  labels:
+    purpose: certbot
+spec:
+  template:
+    spec:
+      serviceAccountName: certbot
+      automountServiceAccountToken: true
+      containers:
+      - name: certbotdns
+        image: mbuckrogers/gcednscertbot
+        args:
+          - "--server=$(LE_SERVER)"
+          - "-n"
+          - "-v"
+          - "--dns-google"
+          - "--dns-google-propagation-seconds=60"          
+          - "--email=$(EMAIL)" 
+          - "--agree-tos"
+          - "--dns-google-credentials=$(GOOGLE_APPLICATION_CREDENTIALS)"
+          - "--deploy-hook=deployhook.sh"
+          - "-d $(DOMAINS)"
+          - certonly
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: google-cloud-key
+            mountPath: /var/secrets/google
+          - name: certs-storage
+            mountPath: /etc/letsencrypt/
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /var/secrets/google/key.json
+        envFrom:
+          - configMapRef:
+              name: certbot-config
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: dns-key
+        - name: certs-storage
+          gcePersistentDisk:
+            pdName: certbot-disk
+            fsType: ext4  
+        #emptyDir: {}
+      restartPolicy: Never

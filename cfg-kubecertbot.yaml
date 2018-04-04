@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: certbot-config
+data:
+  DOMAINS: "example.com, *.example.com, *.subdomain.example.com"
+  EMAIL: "your-eamail@xxx.com"
+  # use for testing -> no rate limits apply
+  LE_SERVER: "https://acme-staging-v02.api.letsencrypt.org/directory"
+  # use for production -> rate limits apply
+  #LE_SERVER: "https://acme-v02.api.letsencrypt.org/directory"
