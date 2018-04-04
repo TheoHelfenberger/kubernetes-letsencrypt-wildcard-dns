@@ -3,7 +3,7 @@
 
 
 echo "Renewed domains: $RENEWED_DOMAINS" 
-SECNAME=$(printf $RENEWED_DOMAINS  | cut -d' ' -f1  | tr '.' '-' | sed s/^\*-//)
+SECNAME="secret-tls-"$(printf $RENEWED_DOMAINS  | cut -d' ' -f1  | tr '.' '-' | sed s/^\*-//)
 
 echo "Delete existing secret $SECNAME"
 kubectl delete --ignore-not-found=true secret $SECNAME || echo "Secret does not yet exist"
