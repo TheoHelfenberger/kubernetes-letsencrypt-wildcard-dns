@@ -11,23 +11,24 @@ Special for Google Cloud Kubernetes.
 
 
 ## Install
-Create service account which is used to run job. Needs Edit permission to create tls secret.
+```console
+# Create service account which is used to run job. Needs Edit permission to create tls secret.
 
-`kubectl -f sa-certbot.yaml`
+$ kubectl -f sa-certbot.yaml
 
-Create config map with certificate request data. Change to your need first!
-Be aware that the [staging environment](https://letsencrypat.org/docs/staging-environment/) is activated
+# Create config map with certificate request data. Change to your need first!
+# Be aware that the [staging environment](https://letsencrypat.org/docs/staging-environment/) is activated
 
-` kubectl -f cfg-kubecertbot.yaml`
+$ kubectl -f cfg-kubecertbot.yaml
 
-Run the certbot job which request the letsencrypt certs for you domain via dns01 challenge
+# Run the certbot job which request the letsencrypt certs for you domain via dns01 challenge
 
-`kubectl -f job-certbot.yaml`
+$ kubectl -f job-certbot.yaml
 
-To renew a certificate create CronJob which checks for certs which need updates. Can be run daily. As nothing will be changed if the certificate is not due to renewal.
+# To renew a certificate create CronJob which checks for certs which need updates. Can be run daily. As nothing will be changed if the certificate is not due to renewal.
 
-`kubectl -f job-renewal-certbot.yaml`
-
+$ kubectl -f job-renewal-certbot.yaml
+```
 ## Configuration
 Change config map to your needs. After each successful job run existing secret will be removed and a new one create. 
 Name of the tls secret is created from the first domain in the certbot request.
